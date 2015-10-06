@@ -11,9 +11,11 @@ import java.io.RandomAccessFile;
  * 
  */
 public class SplitFile {
-	public static final String INPUT_FILE = "D:\\me\\projects\\fresca\\Clients\\jigsaw\\db\\db1stga-backup-ice_jigsaw_60_stg.sql.2015-07-15.19.01.01";
+	public static final String INPUT_FILE = "";
 	public static final int NUMBER_OF_OUTPUT_FILES = 10;
 	public static final String FILE_SUFFIX = ".txt";
+	private static final String OUTPUT_FILE_NAME = INPUT_FILE + "_Splits\\fullJoin" + FILE_SUFFIX;
+	private static final String GENETATED_SPITTED_FILE_NAME = INPUT_FILE + "_Splits\\split.%d" + FILE_SUFFIX;
 	
 	/**
 	 * split file
@@ -33,7 +35,7 @@ public class SplitFile {
 
 		int maxReadBufferSize = 8 * 1024; // 8KB
 		for (int destIx = 1; destIx <= NUMBER_OF_OUTPUT_FILES; destIx++) {
-			BufferedOutputStream bw = new BufferedOutputStream(new FileOutputStream(INPUT_FILE + "_Splits\\split." + destIx + FILE_SUFFIX));
+			BufferedOutputStream bw = new BufferedOutputStream(new FileOutputStream(String.format(GENETATED_SPITTED_FILE_NAME, destIx)));
 			if (bytesPerSplit > maxReadBufferSize) {
 				long numReads = bytesPerSplit / maxReadBufferSize;
 				long numRemainingRead = bytesPerSplit % maxReadBufferSize;
@@ -56,17 +58,21 @@ public class SplitFile {
 		raf.close();
 	}
 	
+	
+	public static void joinFiles(File[] files) throws Exception {
+		joinFiles(files, OUTPUT_FILE_NAME);
+	}
+	
 	/**
 	 * join file
 	 * 
 	 * @throws Exception
 	 */
-	static void joinFiles(File[] files) throws Exception {
+	public static void joinFiles(File[] files, String outputFileName) throws Exception {
 		
 	    int maxReadBufferSize = 8 * 1024;
 
-	    BufferedOutputStream bw = new BufferedOutputStream(new FileOutputStream(INPUT_FILE + "_Splits\\fullJoin"
-	            + FILE_SUFFIX));
+	    BufferedOutputStream bw = new BufferedOutputStream(new FileOutputStream(outputFileName));
 
 	    RandomAccessFile raf = null;
 	    for (File file : files) {
@@ -84,12 +90,12 @@ public class SplitFile {
 	    }
 	    bw.close();
 	}
-
+	
 	public static void joinFiles() throws Exception {
 
 	    File[] files = new File[NUMBER_OF_OUTPUT_FILES];
 	    for (int i = 1; i <= NUMBER_OF_OUTPUT_FILES; i++) {
-	        files[i - 1] = new File(INPUT_FILE + "_Splits\\split." + i + FILE_SUFFIX);
+	        files[i - 1] = new File(String.format(GENETATED_SPITTED_FILE_NAME, i));
 	    }
 
 	    joinFiles(files);

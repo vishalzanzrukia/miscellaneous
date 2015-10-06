@@ -1,0 +1,1 @@
+update employee set name = 'vishal0' where id = 1;update employee set name = 'vishal1' where id = 1;update employee set name = 'vishal0' where id = 1;update employee set name = 'vishal1001' where id = 1;update employee set name = 'vishal10001' where id = 1;
